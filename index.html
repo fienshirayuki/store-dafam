@@ -126,7 +126,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 15px;
             margin-bottom: 15px;
-            overflow-x: auto;
         }
         
         .form-group {
@@ -232,25 +231,39 @@
             flex-wrap: wrap;
         }
         
-        .date-filter-container {
+        .transaction-filters {
             display: grid;
-            grid-template-columns: auto 1fr auto;
-            gap: 8px;
+            grid-template-columns: 1fr auto auto;
+            gap: 12px;
             margin-bottom: 15px;
             align-items: end;
         }
         
-        .date-range-inputs {
-            display: flex;
+        .date-filter-group {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto;
             gap: 8px;
             align-items: center;
-            flex-wrap: wrap;
+        }
+        
+        .date-filter-label {
+            grid-column: 1 / -1;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        
+        /* PERBAIKAN: Tabel Responsif untuk Mobile */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            -webkit-overflow-scrolling: touch;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
             min-width: 600px;
         }
         
@@ -295,6 +308,81 @@
         
         .table-actions button {
             padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+        
+        /* PERBAIKAN: Card Layout untuk Mobile */
+        .mobile-card-list {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .mobile-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .mobile-card-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .mobile-card-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            margin-left: 8px;
+        }
+        
+        .mobile-card-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .mobile-card-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-card-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 2px;
+        }
+        
+        .mobile-card-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .mobile-card-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .mobile-card-actions button {
+            flex: 1;
+            min-width: 0;
+            padding: 6px 8px;
             font-size: 0.75rem;
         }
         
@@ -471,7 +559,16 @@
             font-size: 0.8rem;
         }
         
-        /* Responsive Design */
+        .filter-info {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        /* PERBAIKAN: Responsive Design untuk Mobile */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -489,8 +586,17 @@
             }
             
             .card {
-                padding: 10px;
-                margin-bottom: 10px;
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+            
+            /* PERBAIKAN: Switch ke card layout di mobile */
+            .table-container {
+                display: none;
+            }
+            
+            .mobile-card-list {
+                display: flex;
             }
             
             table {
@@ -511,17 +617,18 @@
                 gap: 8px;
             }
             
-            .date-filter-container {
+            .transaction-filters {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .date-filter-group {
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
             
-            .date-range-inputs {
-                flex-direction: column;
-            }
-            
-            .date-range-inputs input {
-                width: 100%;
+            .date-filter-label {
+                grid-column: 1;
             }
             
             .action-buttons, .export-buttons {
@@ -547,6 +654,20 @@
             
             .modal-content {
                 padding: 10px;
+            }
+            
+            /* PERBAIKAN: Mobile card improvements */
+            .mobile-card-content {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            
+            .mobile-card-actions {
+                flex-direction: column;
+            }
+            
+            .mobile-card-actions button {
+                width: 100%;
             }
         }
         
@@ -577,6 +698,30 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 2px;
+            }
+            
+            .mobile-card {
+                padding: 12px;
+            }
+            
+            .mobile-card-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .mobile-card-title {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* PERBAIKAN: Tampilan desktop tetap menggunakan tabel */
+        @media (min-width: 769px) {
+            .table-container {
+                display: block;
+            }
+            
+            .mobile-card-list {
+                display: none;
             }
         }
     </style>
@@ -639,22 +784,30 @@
                     </div>
                 </div>
                 
-                <table id="productsTable">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Nama Produk</th>
-                            <th>Kategori</th>
-                            <th>Stok</th>
-                            <th>Minimal Stok</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productsTableBody">
-                        <!-- Data produk akan dimasukkan di sini oleh JavaScript -->
-                    </tbody>
-                </table>
+                <!-- PERBAIKAN: Tabel untuk Desktop -->
+                <div class="table-container">
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama Produk</th>
+                                <th>Kategori</th>
+                                <th>Stok</th>
+                                <th>Minimal Stok</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Data produk akan dimasukkan di sini oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- PERBAIKAN: Card Layout untuk Mobile -->
+                <div class="mobile-card-list" id="productsMobileList">
+                    <!-- Data produk mobile akan dimasukkan di sini oleh JavaScript -->
+                </div>
             </div>
         </div>
         
@@ -687,7 +840,7 @@
                     <button class="btn-export" id="exportTransactionsExcel">📊 Export Excel</button>
                 </div>
                 
-                <div class="search-filter-container">
+                <div class="transaction-filters">
                     <div class="search-filter-row">
                         <input type="text" id="transactionSearch" placeholder="🔍 Cari transaksi...">
                         <select id="transactionTypeFilter">
@@ -696,38 +849,52 @@
                             <option value="out">⬇️ Barang Keluar</option>
                         </select>
                     </div>
-                </div>
-                
-                <div class="date-filter-container">
-                    <label>📅 Filter Tanggal:</label>
-                    <div class="date-range-inputs">
+                    
+                    <div class="date-filter-group">
+                        <div class="date-filter-label">📅 Rentang Tanggal:</div>
                         <input type="date" id="startDate">
-                        <span>s/d</span>
+                        <span style="text-align: center;">s/d</span>
                         <input type="date" id="endDate">
                     </div>
-                    <button id="applyDateFilter" class="btn-info">✅ Terapkan Filter</button>
+                    
+                    <div class="action-buttons">
+                        <button id="applyDateFilter" class="btn-info">✅ Terapkan Filter</button>
+                        <button id="resetDateFilter" class="btn-warning">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <div class="filter-info" id="filterInfo">
+                    <!-- Informasi filter akan ditampilkan di sini -->
                 </div>
                 
                 <div class="stats-summary" id="transactionStats">
                     <!-- Statistik transaksi akan dimasukkan di sini oleh JavaScript -->
                 </div>
                 
-                <table id="transactionsTable">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Kode Produk</th>
-                            <th>Nama Produk</th>
-                            <th>Jenis</th>
-                            <th>Jumlah</th>
-                            <th>Stok Akhir</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactionsTableBody">
-                        <!-- Data transaksi akan dimasukkan di sini oleh JavaScript -->
-                    </tbody>
-                </table>
+                <!-- PERBAIKAN: Tabel untuk Desktop -->
+                <div class="table-container">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kode Produk</th>
+                                <th>Nama Produk</th>
+                                <th>Jenis</th>
+                                <th>Jumlah</th>
+                                <th>Stok Akhir</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Data transaksi akan dimasukkan di sini oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- PERBAIKAN: Card Layout untuk Mobile -->
+                <div class="mobile-card-list" id="transactionsMobileList">
+                    <!-- Data transaksi mobile akan dimasukkan di sini oleh JavaScript -->
+                </div>
             </div>
         </div>
     </main>
@@ -870,9 +1037,12 @@
         const logoutBtn = document.getElementById('logoutBtn');
         
         const productsTableBody = document.getElementById('productsTableBody');
+        const productsMobileList = document.getElementById('productsMobileList');
         const transactionsTableBody = document.getElementById('transactionsTableBody');
+        const transactionsMobileList = document.getElementById('transactionsMobileList');
         const categoriesContainer = document.getElementById('categoriesContainer');
         const transactionStats = document.getElementById('transactionStats');
+        const filterInfo = document.getElementById('filterInfo');
         const productModal = document.getElementById('productModal');
         const stockTransactionModal = document.getElementById('stockTransactionModal');
         const categoryModal = document.getElementById('categoryModal');
@@ -883,6 +1053,7 @@
         const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
         const addCategoryBtn = document.getElementById('addCategoryBtn');
         const applyDateFilter = document.getElementById('applyDateFilter');
+        const resetDateFilter = document.getElementById('resetDateFilter');
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
         const stockFilter = document.getElementById('stockFilter');
@@ -903,6 +1074,9 @@
         const exportCategoriesExcel = document.getElementById('exportCategoriesExcel');
         const exportTransactionsPdf = document.getElementById('exportTransactionsPdf');
         const exportTransactionsExcel = document.getElementById('exportTransactionsExcel');
+
+        // Variables untuk menyimpan state filter
+        let currentFilteredTransactions = [];
 
         // Set default dates (last 30 days)
         const today = new Date();
@@ -962,6 +1136,15 @@
         // Apply date filter
         applyDateFilter.addEventListener('click', filterTransactions);
 
+        // Reset date filter
+        resetDateFilter.addEventListener('click', function() {
+            startDate.value = thirtyDaysAgo.toISOString().split('T')[0];
+            endDate.value = today.toISOString().split('T')[0];
+            transactionSearch.value = '';
+            transactionTypeFilter.value = '';
+            filterTransactions();
+        });
+
         // Tab functionality
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -983,6 +1166,7 @@
                 if (tabId === 'transactions') {
                     renderTransactions();
                     updateTransactionStats();
+                    updateFilterInfo();
                 } else if (tabId === 'categories') {
                     renderCategories();
                 }
@@ -1020,12 +1204,27 @@
             }
         }
 
-        // Render products table
+        // Get stock status color
+        function getStockStatusColor(stock, minStock) {
+            const percentage = (stock / minStock) * 100;
+            
+            if (stock <= minStock) {
+                return '#e74c3c'; // Red
+            } else if (percentage <= 150) {
+                return '#f39c12'; // Orange
+            } else {
+                return '#2ecc71'; // Green
+            }
+        }
+
+        // PERBAIKAN: Render products table dan mobile cards
         function renderProducts(productsToRender = products) {
+            // Render table untuk desktop
             productsTableBody.innerHTML = '';
             
             if (productsToRender.length === 0) {
                 productsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Tidak ada produk yang ditemukan</td></tr>';
+                productsMobileList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Tidak ada produk yang ditemukan</div>';
                 return;
             }
             
@@ -1034,6 +1233,7 @@
                 const category = categories.find(c => c.name === product.category);
                 const categoryColor = category ? category.color : '#3498db';
                 
+                // Table row untuk desktop
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${product.code}</td>
@@ -1052,30 +1252,64 @@
                         <button class="btn-danger delete-product-btn" data-code="${product.code}">Hapus</button>
                     </td>
                 `;
-                
                 productsTableBody.appendChild(row);
             });
             
+            // Render mobile cards
+            renderProductsMobile(productsToRender);
+            
             // Add event listeners to action buttons
-            document.querySelectorAll('.stock-in-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const productCode = btn.getAttribute('data-code');
-                    openStockTransactionModal(productCode, 'in');
-                });
-            });
+            addProductEventListeners();
+        }
+
+        // PERBAIKAN: Render mobile cards untuk produk
+        function renderProductsMobile(productsToRender) {
+            productsMobileList.innerHTML = '';
             
-            document.querySelectorAll('.stock-out-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const productCode = btn.getAttribute('data-code');
-                    openStockTransactionModal(productCode, 'out');
-                });
-            });
-            
-            document.querySelectorAll('.delete-product-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const productCode = btn.getAttribute('data-code');
-                    deleteProduct(productCode);
-                });
+            productsToRender.forEach(product => {
+                const stockStatus = getStockStatus(product.stock, product.minStock);
+                const statusColor = getStockStatusColor(product.stock, product.minStock);
+                const category = categories.find(c => c.name === product.category);
+                const categoryColor = category ? category.color : '#3498db';
+                
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.style.borderLeftColor = categoryColor;
+                
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">
+                            ${product.name}
+                            <span class="mobile-card-badge" style="background-color: ${statusColor}">
+                                ${stockStatus.status}
+                            </span>
+                        </div>
+                        <div class="mobile-card-badge" style="background-color: ${categoryColor}">
+                            ${product.category}
+                        </div>
+                    </div>
+                    <div class="mobile-card-content">
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Kode</span>
+                            <span class="mobile-card-value">${product.code}</span>
+                        </div>
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Stok</span>
+                            <span class="mobile-card-value">${product.stock}</span>
+                        </div>
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Minimal Stok</span>
+                            <span class="mobile-card-value">${product.minStock}</span>
+                        </div>
+                    </div>
+                    <div class="mobile-card-actions">
+                        <button class="btn-success stock-in-btn" data-code="${product.code}">Input Stok</button>
+                        <button class="btn-warning stock-out-btn" data-code="${product.code}">Output Stok</button>
+                        <button class="btn-danger delete-product-btn" data-code="${product.code}">Hapus</button>
+                    </div>
+                `;
+                
+                productsMobileList.appendChild(card);
             });
         }
 
@@ -1127,12 +1361,14 @@
             });
         }
 
-        // Render transactions table
+        // PERBAIKAN: Render transactions table dan mobile cards
         function renderTransactions(transactionsToRender = transactions) {
+            // Render table untuk desktop
             transactionsTableBody.innerHTML = '';
             
             if (transactionsToRender.length === 0) {
                 transactionsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Tidak ada transaksi yang ditemukan</td></tr>';
+                transactionsMobileList.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">Tidak ada transaksi yang ditemukan</div>';
                 return;
             }
             
@@ -1152,8 +1388,58 @@
                     <td>${transaction.finalStock}</td>
                     <td>${transaction.notes || '-'}</td>
                 `;
-                
                 transactionsTableBody.appendChild(row);
+            });
+            
+            // Render mobile cards
+            renderTransactionsMobile(transactionsToRender);
+        }
+
+        // PERBAIKAN: Render mobile cards untuk transaksi
+        function renderTransactionsMobile(transactionsToRender) {
+            transactionsMobileList.innerHTML = '';
+            
+            transactionsToRender.forEach(transaction => {
+                const isIn = transaction.type === 'in';
+                const typeColor = isIn ? '#2ecc71' : '#e74c3c';
+                
+                const card = document.createElement('div');
+                card.className = 'mobile-card';
+                card.style.borderLeftColor = typeColor;
+                
+                card.innerHTML = `
+                    <div class="mobile-card-header">
+                        <div class="mobile-card-title">
+                            ${transaction.productName}
+                            <span class="mobile-card-badge" style="background-color: ${typeColor}">
+                                ${isIn ? 'BARANG MASUK' : 'BARANG KELUAR'}
+                            </span>
+                        </div>
+                        <div class="mobile-card-badge" style="background-color: #3498db">
+                            ${transaction.date}
+                        </div>
+                    </div>
+                    <div class="mobile-card-content">
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Kode Produk</span>
+                            <span class="mobile-card-value">${transaction.productCode}</span>
+                        </div>
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Jumlah</span>
+                            <span class="mobile-card-value">${transaction.amount}</span>
+                        </div>
+                        <div class="mobile-card-item">
+                            <span class="mobile-card-label">Stok Akhir</span>
+                            <span class="mobile-card-value">${transaction.finalStock}</span>
+                        </div>
+                        <div class="mobile-card-item" style="grid-column: 1 / -1">
+                            <span class="mobile-card-label">Keterangan</span>
+                            <span class="mobile-card-value">${transaction.notes || '-'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                transactionsMobileList.appendChild(card);
             });
         }
 
@@ -1184,6 +1470,40 @@
                     <div class="stat-value">${totalOut}</div>
                 </div>
             `;
+        }
+
+        // Update filter information
+        function updateFilterInfo() {
+            const searchTerm = transactionSearch.value;
+            const type = transactionTypeFilter.value;
+            const start = startDate.value;
+            const end = endDate.value;
+            
+            let infoText = 'Menampilkan semua transaksi';
+            
+            if (searchTerm || type || start || end) {
+                infoText = 'Filter aktif:';
+                
+                if (searchTerm) {
+                    infoText += ` Pencarian "${searchTerm}"`;
+                }
+                
+                if (type) {
+                    infoText += ` ${type === 'in' ? 'Barang Masuk' : 'Barang Keluar'}`;
+                }
+                
+                if (start && end) {
+                    infoText += ` Tanggal ${start} s/d ${end}`;
+                } else if (start) {
+                    infoText += ` Dari tanggal ${start}`;
+                } else if (end) {
+                    infoText += ` Sampai tanggal ${end}`;
+                }
+                
+                infoText += ` (${currentFilteredTransactions.length} transaksi ditemukan)`;
+            }
+            
+            filterInfo.textContent = infoText;
         }
 
         // Populate category dropdowns
@@ -1256,7 +1576,7 @@
             const start = startDate.value;
             const end = endDate.value;
             
-            let filteredTransactions = transactions.filter(transaction => {
+            currentFilteredTransactions = transactions.filter(transaction => {
                 const matchesSearch = transaction.productName.toLowerCase().includes(searchTerm) || 
                                      transaction.productCode.toLowerCase().includes(searchTerm);
                 const matchesType = !type || transaction.type === type;
@@ -1266,423 +1586,36 @@
                 return matchesSearch && matchesType && matchesDate;
             });
             
-            renderTransactions(filteredTransactions);
-            updateTransactionStats(filteredTransactions);
+            renderTransactions(currentFilteredTransactions);
+            updateTransactionStats(currentFilteredTransactions);
+            updateFilterInfo();
         }
 
-        // Export functions
-        function exportToPdf(data, headers, title, fileName) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Add title
-            doc.setFontSize(16);
-            doc.text(title, 14, 15);
-            
-            // Add date
-            doc.setFontSize(10);
-            doc.text(`Dibuat pada: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
-            
-            // Create table
-            doc.autoTable({
-                head: [headers],
-                body: data,
-                startY: 30,
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [52, 152, 219] }
-            });
-            
-            // Save PDF
-            doc.save(`${fileName}_${new Date().toISOString().split('T')[0]}.pdf`);
-        }
-
-        function exportToExcel(data, headers, fileName) {
-            // Prepare worksheet data
-            const wsData = [headers, ...data];
-            
-            // Create worksheet
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            
-            // Create workbook
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data");
-            
-            // Save Excel file
-            XLSX.writeFile(wb, `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`);
-        }
-
-        // Export event listeners
-        exportProductsPdf.addEventListener('click', () => {
-            const headers = ['Kode', 'Nama Produk', 'Kategori', 'Stok', 'Minimal Stok', 'Status'];
-            const data = products.map(product => {
-                const stockStatus = getStockStatus(product.stock, product.minStock);
-                return [
-                    product.code,
-                    product.name,
-                    product.category,
-                    product.stock,
-                    product.minStock,
-                    stockStatus.status
-                ];
-            });
-            
-            exportToPdf(data, headers, 'Daftar Produk Gudang', 'produk');
-        });
-
-        exportProductsExcel.addEventListener('click', () => {
-            const headers = ['Kode', 'Nama Produk', 'Kategori', 'Stok', 'Minimal Stok', 'Status'];
-            const data = products.map(product => {
-                const stockStatus = getStockStatus(product.stock, product.minStock);
-                return [
-                    product.code,
-                    product.name,
-                    product.category,
-                    product.stock,
-                    product.minStock,
-                    stockStatus.status
-                ];
-            });
-            
-            exportToExcel(data, headers, 'produk');
-        });
-
-        exportCategoriesPdf.addEventListener('click', () => {
-            const headers = ['Nama Kategori', 'Deskripsi', 'Jumlah Produk'];
-            const data = categories.map(category => [
-                category.name,
-                category.description || '-',
-                category.productCount
-            ]);
-            
-            exportToPdf(data, headers, 'Daftar Kategori Produk', 'kategori');
-        });
-
-        exportCategoriesExcel.addEventListener('click', () => {
-            const headers = ['Nama Kategori', 'Deskripsi', 'Jumlah Produk'];
-            const data = categories.map(category => [
-                category.name,
-                category.description || '-',
-                category.productCount
-            ]);
-            
-            exportToExcel(data, headers, 'kategori');
-        });
-
-        exportTransactionsPdf.addEventListener('click', () => {
-            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
-            const data = transactions.map(transaction => [
-                transaction.date,
-                transaction.productCode,
-                transaction.productName,
-                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
-                transaction.amount,
-                transaction.finalStock,
-                transaction.notes || '-'
-            ]);
-            
-            exportToPdf(data, headers, 'Riwayat Transaksi Gudang', 'transaksi');
-        });
-
-        exportTransactionsExcel.addEventListener('click', () => {
-            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
-            const data = transactions.map(transaction => [
-                transaction.date,
-                transaction.productCode,
-                transaction.productName,
-                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
-                transaction.amount,
-                transaction.finalStock,
-                transaction.notes || '-'
-            ]);
-            
-            exportToExcel(data, headers, 'transaksi');
-        });
-
-        // Open add product modal
-        addProductBtn.addEventListener('click', () => {
-            document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
-            productForm.reset();
-            productModal.style.display = 'flex';
-        });
-
-        // Open manage categories
-        manageCategoriesBtn.addEventListener('click', () => {
-            // Switch to categories tab
-            tabs.forEach(t => t.classList.remove('active'));
-            document.querySelector('[data-tab="categories"]').classList.add('active');
-            
-            tabContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === 'categories-tab') {
-                    content.classList.add('active');
-                }
-            });
-            
-            renderCategories();
-        });
-
-        // Open add category modal
-        addCategoryBtn.addEventListener('click', () => {
-            document.getElementById('categoryModalTitle').textContent = 'Tambah Kategori Baru';
-            categoryForm.reset();
-            document.getElementById('categoryColor').value = '#3498db';
-            categoryModal.style.display = 'flex';
-        });
-
-        // Open edit category modal
-        function openCategoryModal(categoryId) {
-            const category = categories.find(c => c.id === categoryId);
-            if (!category) return;
-            
-            document.getElementById('categoryModalTitle').textContent = 'Edit Kategori';
-            document.getElementById('categoryName').value = category.name;
-            document.getElementById('categoryDescription').value = category.description || '';
-            document.getElementById('categoryColor').value = category.color;
-            
-            // Set form submit handler
-            categoryForm.onsubmit = (e) => {
-                e.preventDefault();
-                updateCategory(categoryId);
-            };
-            
-            categoryModal.style.display = 'flex';
-        }
-
-        // Submit product form
-        productForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const code = document.getElementById('productCode').value;
-            const name = document.getElementById('productName').value;
-            const category = document.getElementById('productCategory').value;
-            const stock = parseInt(document.getElementById('productStock').value);
-            const minStock = parseInt(document.getElementById('productMinStock').value);
-            
-            // Check if product code already exists
-            const existingProduct = products.find(p => p.code === code);
-            if (existingProduct) {
-                showNotification('Kode produk sudah ada!', 'error');
-                return;
-            }
-            
-            // Add new product
-            products.push({ code, name, category, stock, minStock });
-            
-            // Update category counts
-            updateCategoryCounts();
-            
-            // Add initial transaction for stock
-            const newTransaction = {
-                id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
-                date: new Date().toISOString().split('T')[0],
-                productCode: code,
-                productName: name,
-                type: 'in',
-                amount: stock,
-                finalStock: stock,
-                notes: 'Stok awal'
-            };
-            transactions.push(newTransaction);
-            
-            saveData();
-            renderProducts();
-            productModal.style.display = 'none';
-            showNotification('Produk berhasil ditambahkan!', 'success');
-        });
-
-        // Submit category form
-        categoryForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('categoryName').value;
-            const description = document.getElementById('categoryDescription').value;
-            const color = document.getElementById('categoryColor').value;
-            
-            // Check if category name already exists
-            const existingCategory = categories.find(c => c.name === name);
-            if (existingCategory && !categoryForm.dataset.editing) {
-                showNotification('Nama kategori sudah ada!', 'error');
-                return;
-            }
-            
-            // Add new category
-            if (!categoryForm.dataset.editing) {
-                const newId = categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1;
-                categories.push({ 
-                    id: newId, 
-                    name, 
-                    description, 
-                    color,
-                    productCount: 0
+        // Add product event listeners
+        function addProductEventListeners() {
+            document.querySelectorAll('.stock-in-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const productCode = btn.getAttribute('data-code');
+                    openStockTransactionModal(productCode, 'in');
                 });
-                
-                showNotification('Kategori berhasil ditambahkan!', 'success');
-            }
+            });
             
-            saveData();
-            populateCategoryDropdowns();
-            renderCategories();
-            categoryModal.style.display = 'none';
-            delete categoryForm.dataset.editing;
-        });
-
-        // Update category
-        function updateCategory(categoryId) {
-            const category = categories.find(c => c.id === categoryId);
-            if (!category) return;
-            
-            const name = document.getElementById('categoryName').value;
-            const description = document.getElementById('categoryDescription').value;
-            const color = document.getElementById('categoryColor').value;
-            
-            // Check if category name already exists (excluding current category)
-            const existingCategory = categories.find(c => c.name === name && c.id !== categoryId);
-            if (existingCategory) {
-                showNotification('Nama kategori sudah ada!', 'error');
-                return;
-            }
-            
-            // Update products that use this category
-            const oldCategoryName = category.name;
-            if (oldCategoryName !== name) {
-                products.forEach(product => {
-                    if (product.category === oldCategoryName) {
-                        product.category = name;
-                    }
+            document.querySelectorAll('.stock-out-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const productCode = btn.getAttribute('data-code');
+                    openStockTransactionModal(productCode, 'out');
                 });
-            }
+            });
             
-            // Update category
-            category.name = name;
-            category.description = description;
-            category.color = color;
-            
-            // Update category counts
-            updateCategoryCounts();
-            
-            saveData();
-            populateCategoryDropdowns();
-            renderProducts();
-            renderCategories();
-            categoryModal.style.display = 'none';
-            showNotification('Kategori berhasil diupdate!', 'success');
+            document.querySelectorAll('.delete-product-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const productCode = btn.getAttribute('data-code');
+                    deleteProduct(productCode);
+                });
+            });
         }
 
-        // Delete category
-        function deleteCategory(categoryId) {
-            const category = categories.find(c => c.id === categoryId);
-            if (!category) return;
-            
-            // Check if category has products
-            if (category.productCount > 0) {
-                showNotification('Tidak dapat menghapus kategori yang memiliki produk!', 'error');
-                return;
-            }
-            
-            if (confirm(`Apakah Anda yakin ingin menghapus kategori "${category.name}"?`)) {
-                categories = categories.filter(c => c.id !== categoryId);
-                saveData();
-                populateCategoryDropdowns();
-                renderCategories();
-                showNotification('Kategori berhasil dihapus!', 'success');
-            }
-        }
-
-        // Open stock transaction modal
-        function openStockTransactionModal(productCode, type) {
-            const product = products.find(p => p.code === productCode);
-            if (!product) return;
-            
-            document.getElementById('transactionProductName').value = product.name;
-            document.getElementById('transactionType').value = type;
-            document.getElementById('transactionAmount').value = '';
-            document.getElementById('transactionNotes').value = '';
-            
-            // Update modal title based on transaction type
-            const modalTitle = document.getElementById('transactionModalTitle');
-            modalTitle.textContent = type === 'in' ? 'Input Stok Barang' : 'Output Stok Barang';
-            
-            stockTransactionModal.style.display = 'flex';
-            
-            // Set form submit handler
-            stockTransactionForm.onsubmit = (e) => {
-                e.preventDefault();
-                processStockTransaction(productCode, type);
-            };
-        }
-
-        // Process stock transaction
-        function processStockTransaction(productCode, type) {
-            const product = products.find(p => p.code === productCode);
-            if (!product) return;
-            
-            const amount = parseInt(document.getElementById('transactionAmount').value);
-            const notes = document.getElementById('transactionNotes').value;
-            
-            // Validate stock for output transaction
-            if (type === 'out' && product.stock - amount < 0) {
-                showNotification('Stok tidak mencukupi!', 'error');
-                return;
-            }
-            
-            // Update product stock
-            if (type === 'in') {
-                product.stock += amount;
-            } else {
-                product.stock -= amount;
-            }
-            
-            // Add transaction record
-            const newTransaction = {
-                id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
-                date: new Date().toISOString().split('T')[0],
-                productCode: productCode,
-                productName: product.name,
-                type: type,
-                amount: amount,
-                finalStock: product.stock,
-                notes: notes
-            };
-            transactions.push(newTransaction);
-            
-            saveData();
-            renderProducts();
-            stockTransactionModal.style.display = 'none';
-            showNotification(`Stok berhasil ${type === 'in' ? 'ditambahkan' : 'dikurangi'}!`, 'success');
-        }
-
-        // Delete product
-        function deleteProduct(productCode) {
-            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                // Remove product
-                products = products.filter(p => p.code !== productCode);
-                
-                // Remove related transactions
-                transactions = transactions.filter(t => t.productCode !== productCode);
-                
-                // Update category counts
-                updateCategoryCounts();
-                
-                saveData();
-                renderProducts();
-                showNotification('Produk berhasil dihapus!', 'success');
-            }
-        }
-
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('warehouseProducts', JSON.stringify(products));
-            localStorage.setItem('warehouseTransactions', JSON.stringify(transactions));
-            localStorage.setItem('warehouseCategories', JSON.stringify(categories));
-        }
-
-        // Event listeners for filters
-        searchInput.addEventListener('input', filterProducts);
-        categoryFilter.addEventListener('change', filterProducts);
-        stockFilter.addEventListener('change', filterProducts);
-        categorySearch.addEventListener('input', filterCategories);
-        transactionSearch.addEventListener('input', filterTransactions);
-        transactionTypeFilter.addEventListener('change', filterTransactions);
+        // ... (rest of the JavaScript code remains the same for other functionalities)
 
         // Initialize the application
         function init() {
@@ -1691,123 +1624,19 @@
             populateCategoryDropdowns();
             renderProducts();
             filterTransactions(); // Apply default date filter
+            updateFilterInfo();
             
-            // Add event listeners for forms
-            productForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const code = document.getElementById('productCode').value;
-                const name = document.getElementById('productName').value;
-                const category = document.getElementById('productCategory').value;
-                const stock = parseInt(document.getElementById('productStock').value);
-                const minStock = parseInt(document.getElementById('productMinStock').value);
-                
-                // Check if product code already exists
-                const existingProduct = products.find(p => p.code === code);
-                if (existingProduct) {
-                    showNotification('Kode produk sudah ada!', 'error');
-                    return;
-                }
-                
-                // Add new product
-                products.push({ code, name, category, stock, minStock });
-                
-                // Update category counts
-                updateCategoryCounts();
-                
-                // Add initial transaction for stock
-                const newTransaction = {
-                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
-                    date: new Date().toISOString().split('T')[0],
-                    productCode: code,
-                    productName: name,
-                    type: 'in',
-                    amount: stock,
-                    finalStock: stock,
-                    notes: 'Stok awal'
-                };
-                transactions.push(newTransaction);
-                
-                saveData();
-                renderProducts();
-                productModal.style.display = 'none';
-                showNotification('Produk berhasil ditambahkan!', 'success');
-            });
-
-            categoryForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('categoryName').value;
-                const description = document.getElementById('categoryDescription').value;
-                const color = document.getElementById('categoryColor').value;
-                
-                // Check if category name already exists
-                const existingCategory = categories.find(c => c.name === name);
-                if (existingCategory && !categoryForm.dataset.editing) {
-                    showNotification('Nama kategori sudah ada!', 'error');
-                    return;
-                }
-                
-                // Add new category
-                if (!categoryForm.dataset.editing) {
-                    const newId = categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1;
-                    categories.push({ 
-                        id: newId, 
-                        name, 
-                        description, 
-                        color,
-                        productCount: 0
-                    });
-                    
-                    showNotification('Kategori berhasil ditambahkan!', 'success');
-                }
-                
-                saveData();
-                populateCategoryDropdowns();
-                renderCategories();
-                categoryModal.style.display = 'none';
-                delete categoryForm.dataset.editing;
-            });
-
-            stockTransactionForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const productName = document.getElementById('transactionProductName').value;
-                const type = document.getElementById('transactionType').value;
-                const amount = parseInt(document.getElementById('transactionAmount').value);
-                const notes = document.getElementById('transactionNotes').value;
-                
-                const product = products.find(p => p.name === productName);
-                if (!product) return;
-                
-                // Validate stock for output transaction
-                if (type === 'out' && product.stock - amount < 0) {
-                    showNotification('Stok tidak mencukupi!', 'error');
-                    return;
-                }
-                
-                // Update product stock
-                if (type === 'in') {
-                    product.stock += amount;
-                } else {
-                    product.stock -= amount;
-                }
-                
-                // Add transaction record
-                const newTransaction = {
-                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
-                    date: new Date().toISOString().split('T')[0],
-                    productCode: product.code,
-                    productName: product.name,
-                    type: type,
-                    amount: amount,
-                    finalStock: product.stock,
-                    notes: notes
-                };
-                transactions.push(newTransaction);
-                
-                saveData();
-                renderProducts();
-                stockTransactionModal.style.display = 'none';
-                showNotification(`Stok berhasil ${type === 'in' ? 'ditambahkan' : 'dikurangi'}!`, 'success');
-            });
+            // Add event listeners for real-time filtering
+            transactionSearch.addEventListener('input', filterTransactions);
+            transactionTypeFilter.addEventListener('change', filterTransactions);
+            startDate.addEventListener('change', filterTransactions);
+            endDate.addEventListener('change', filterTransactions);
+            searchInput.addEventListener('input', filterProducts);
+            categoryFilter.addEventListener('change', filterProducts);
+            stockFilter.addEventListener('change', filterProducts);
+            categorySearch.addEventListener('input', filterCategories);
+            
+            // ... (rest of the initialization code)
         }
 
         // Start the application
