@@ -232,28 +232,19 @@
             flex-wrap: wrap;
         }
         
-        /* PERBAIKAN: Layout filter transaksi yang lebih rapi */
-        .transaction-filters {
+        .date-filter-container {
             display: grid;
-            grid-template-columns: 1fr auto auto;
-            gap: 12px;
+            grid-template-columns: auto 1fr auto;
+            gap: 8px;
             margin-bottom: 15px;
             align-items: end;
         }
         
-        .date-filter-group {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr auto;
+        .date-range-inputs {
+            display: flex;
             gap: 8px;
             align-items: center;
-        }
-        
-        .date-filter-label {
-            grid-column: 1 / -1;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: var(--dark-color);
+            flex-wrap: wrap;
         }
         
         table {
@@ -480,15 +471,6 @@
             font-size: 0.8rem;
         }
         
-        .filter-info {
-            background: #e3f2fd;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 0.85rem;
-            border-left: 4px solid var(--primary-color);
-        }
-        
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -529,19 +511,17 @@
                 gap: 8px;
             }
             
-            /* PERBAIKAN: Responsive layout untuk filter transaksi */
-            .transaction-filters {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .date-filter-group {
+            .date-filter-container {
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
             
-            .date-filter-label {
-                grid-column: 1;
+            .date-range-inputs {
+                flex-direction: column;
+            }
+            
+            .date-range-inputs input {
+                width: 100%;
             }
             
             .action-buttons, .export-buttons {
@@ -707,8 +687,7 @@
                     <button class="btn-export" id="exportTransactionsExcel">📊 Export Excel</button>
                 </div>
                 
-                <!-- PERBAIKAN: Layout filter transaksi yang lebih rapi -->
-                <div class="transaction-filters">
+                <div class="search-filter-container">
                     <div class="search-filter-row">
                         <input type="text" id="transactionSearch" placeholder="🔍 Cari transaksi...">
                         <select id="transactionTypeFilter">
@@ -717,22 +696,16 @@
                             <option value="out">⬇️ Barang Keluar</option>
                         </select>
                     </div>
-                    
-                    <div class="date-filter-group">
-                        <div class="date-filter-label">📅 Rentang Tanggal:</div>
+                </div>
+                
+                <div class="date-filter-container">
+                    <label>📅 Filter Tanggal:</label>
+                    <div class="date-range-inputs">
                         <input type="date" id="startDate">
-                        <span style="text-align: center;">s/d</span>
+                        <span>s/d</span>
                         <input type="date" id="endDate">
                     </div>
-                    
-                    <div class="action-buttons">
-                        <button id="applyDateFilter" class="btn-info">✅ Terapkan Filter</button>
-                        <button id="resetDateFilter" class="btn-warning">🔄 Reset</button>
-                    </div>
-                </div>
-
-                <div class="filter-info" id="filterInfo">
-                    <!-- Informasi filter akan ditampilkan di sini -->
+                    <button id="applyDateFilter" class="btn-info">✅ Terapkan Filter</button>
                 </div>
                 
                 <div class="stats-summary" id="transactionStats">
@@ -900,7 +873,6 @@
         const transactionsTableBody = document.getElementById('transactionsTableBody');
         const categoriesContainer = document.getElementById('categoriesContainer');
         const transactionStats = document.getElementById('transactionStats');
-        const filterInfo = document.getElementById('filterInfo');
         const productModal = document.getElementById('productModal');
         const stockTransactionModal = document.getElementById('stockTransactionModal');
         const categoryModal = document.getElementById('categoryModal');
@@ -911,7 +883,6 @@
         const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
         const addCategoryBtn = document.getElementById('addCategoryBtn');
         const applyDateFilter = document.getElementById('applyDateFilter');
-        const resetDateFilter = document.getElementById('resetDateFilter');
         const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
         const stockFilter = document.getElementById('stockFilter');
@@ -932,9 +903,6 @@
         const exportCategoriesExcel = document.getElementById('exportCategoriesExcel');
         const exportTransactionsPdf = document.getElementById('exportTransactionsPdf');
         const exportTransactionsExcel = document.getElementById('exportTransactionsExcel');
-
-        // Variables untuk menyimpan state filter
-        let currentFilteredTransactions = [];
 
         // Set default dates (last 30 days)
         const today = new Date();
@@ -994,15 +962,6 @@
         // Apply date filter
         applyDateFilter.addEventListener('click', filterTransactions);
 
-        // Reset date filter
-        resetDateFilter.addEventListener('click', function() {
-            startDate.value = thirtyDaysAgo.toISOString().split('T')[0];
-            endDate.value = today.toISOString().split('T')[0];
-            transactionSearch.value = '';
-            transactionTypeFilter.value = '';
-            filterTransactions();
-        });
-
         // Tab functionality
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
@@ -1024,7 +983,6 @@
                 if (tabId === 'transactions') {
                     renderTransactions();
                     updateTransactionStats();
-                    updateFilterInfo();
                 } else if (tabId === 'categories') {
                     renderCategories();
                 }
@@ -1228,40 +1186,6 @@
             `;
         }
 
-        // Update filter information
-        function updateFilterInfo() {
-            const searchTerm = transactionSearch.value;
-            const type = transactionTypeFilter.value;
-            const start = startDate.value;
-            const end = endDate.value;
-            
-            let infoText = 'Menampilkan semua transaksi';
-            
-            if (searchTerm || type || start || end) {
-                infoText = 'Filter aktif:';
-                
-                if (searchTerm) {
-                    infoText += ` Pencarian "${searchTerm}"`;
-                }
-                
-                if (type) {
-                    infoText += ` ${type === 'in' ? 'Barang Masuk' : 'Barang Keluar'}`;
-                }
-                
-                if (start && end) {
-                    infoText += ` Tanggal ${start} s/d ${end}`;
-                } else if (start) {
-                    infoText += ` Dari tanggal ${start}`;
-                } else if (end) {
-                    infoText += ` Sampai tanggal ${end}`;
-                }
-                
-                infoText += ` (${currentFilteredTransactions.length} transaksi ditemukan)`;
-            }
-            
-            filterInfo.textContent = infoText;
-        }
-
         // Populate category dropdowns
         function populateCategoryDropdowns() {
             const categoryDropdowns = [
@@ -1332,7 +1256,7 @@
             const start = startDate.value;
             const end = endDate.value;
             
-            currentFilteredTransactions = transactions.filter(transaction => {
+            let filteredTransactions = transactions.filter(transaction => {
                 const matchesSearch = transaction.productName.toLowerCase().includes(searchTerm) || 
                                      transaction.productCode.toLowerCase().includes(searchTerm);
                 const matchesType = !type || transaction.type === type;
@@ -1342,13 +1266,12 @@
                 return matchesSearch && matchesType && matchesDate;
             });
             
-            renderTransactions(currentFilteredTransactions);
-            updateTransactionStats(currentFilteredTransactions);
-            updateFilterInfo();
+            renderTransactions(filteredTransactions);
+            updateTransactionStats(filteredTransactions);
         }
 
-        // PERBAIKAN: Export functions yang memperhatikan filter
-        function exportToPdf(data, headers, title, fileName, filterInfo = '') {
+        // Export functions
+        function exportToPdf(data, headers, title, fileName) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
@@ -1356,19 +1279,15 @@
             doc.setFontSize(16);
             doc.text(title, 14, 15);
             
-            // Add date and filter info
+            // Add date
             doc.setFontSize(10);
             doc.text(`Dibuat pada: ${new Date().toLocaleDateString('id-ID')}`, 14, 22);
-            
-            if (filterInfo) {
-                doc.text(`Filter: ${filterInfo}`, 14, 28);
-            }
             
             // Create table
             doc.autoTable({
                 head: [headers],
                 body: data,
-                startY: filterInfo ? 35 : 30,
+                startY: 30,
                 styles: { fontSize: 8 },
                 headStyles: { fillColor: [52, 152, 219] }
             });
@@ -1377,20 +1296,9 @@
             doc.save(`${fileName}_${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
-        function exportToExcel(data, headers, fileName, filterInfo = '') {
+        function exportToExcel(data, headers, fileName) {
             // Prepare worksheet data
-            const wsData = [
-                [headers[0].replace('📋 ', '')], // Remove emoji from title
-                [`Dibuat pada: ${new Date().toLocaleDateString('id-ID')}`]
-            ];
-            
-            if (filterInfo) {
-                wsData.push([`Filter: ${filterInfo}`]);
-                wsData.push([]); // Empty row
-            }
-            
-            wsData.push(headers);
-            wsData.push(...data);
+            const wsData = [headers, ...data];
             
             // Create worksheet
             const ws = XLSX.utils.aoa_to_sheet(wsData);
@@ -1403,74 +1311,7 @@
             XLSX.writeFile(wb, `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`);
         }
 
-        // Export event listeners untuk transaksi dengan filter
-        exportTransactionsPdf.addEventListener('click', () => {
-            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
-            const data = currentFilteredTransactions.map(transaction => [
-                transaction.date,
-                transaction.productCode,
-                transaction.productName,
-                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
-                transaction.amount,
-                transaction.finalStock,
-                transaction.notes || '-'
-            ]);
-            
-            const filterInfoText = generateFilterInfoText();
-            
-            exportToPdf(data, headers, 'Laporan Transaksi Gudang', 'transaksi', filterInfoText);
-        });
-
-        exportTransactionsExcel.addEventListener('click', () => {
-            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
-            const data = currentFilteredTransactions.map(transaction => [
-                transaction.date,
-                transaction.productCode,
-                transaction.productName,
-                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
-                transaction.amount,
-                transaction.finalStock,
-                transaction.notes || '-'
-            ]);
-            
-            const filterInfoText = generateFilterInfoText();
-            
-            exportToExcel(data, headers, 'transaksi', filterInfoText);
-        });
-
-        // Generate filter info text untuk export
-        function generateFilterInfoText() {
-            const searchTerm = transactionSearch.value;
-            const type = transactionTypeFilter.value;
-            const start = startDate.value;
-            const end = endDate.value;
-            
-            let filterText = '';
-            
-            if (searchTerm) {
-                filterText += `Pencarian: ${searchTerm}`;
-            }
-            
-            if (type) {
-                if (filterText) filterText += ', ';
-                filterText += `Jenis: ${type === 'in' ? 'Barang Masuk' : 'Barang Keluar'}`;
-            }
-            
-            if (start && end) {
-                if (filterText) filterText += ', ';
-                filterText += `Tanggal: ${start} s/d ${end}`;
-            } else if (start) {
-                if (filterText) filterText += ', ';
-                filterText += `Dari: ${start}`;
-            } else if (end) {
-                if (filterText) filterText += ', ';
-                filterText += `Sampai: ${end}`;
-            }
-            
-            return filterText || 'Semua Data';
-        }
-
-        // Export untuk produk dan kategori (tetap semua data)
+        // Export event listeners
         exportProductsPdf.addEventListener('click', () => {
             const headers = ['Kode', 'Nama Produk', 'Kategori', 'Stok', 'Minimal Stok', 'Status'];
             const data = products.map(product => {
@@ -1527,7 +1368,321 @@
             exportToExcel(data, headers, 'kategori');
         });
 
-        // ... (rest of the code remains the same for other functionalities)
+        exportTransactionsPdf.addEventListener('click', () => {
+            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
+            const data = transactions.map(transaction => [
+                transaction.date,
+                transaction.productCode,
+                transaction.productName,
+                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
+                transaction.amount,
+                transaction.finalStock,
+                transaction.notes || '-'
+            ]);
+            
+            exportToPdf(data, headers, 'Riwayat Transaksi Gudang', 'transaksi');
+        });
+
+        exportTransactionsExcel.addEventListener('click', () => {
+            const headers = ['Tanggal', 'Kode Produk', 'Nama Produk', 'Jenis', 'Jumlah', 'Stok Akhir', 'Keterangan'];
+            const data = transactions.map(transaction => [
+                transaction.date,
+                transaction.productCode,
+                transaction.productName,
+                transaction.type === 'in' ? 'Barang Masuk' : 'Barang Keluar',
+                transaction.amount,
+                transaction.finalStock,
+                transaction.notes || '-'
+            ]);
+            
+            exportToExcel(data, headers, 'transaksi');
+        });
+
+        // Open add product modal
+        addProductBtn.addEventListener('click', () => {
+            document.getElementById('modalTitle').textContent = 'Tambah Produk Baru';
+            productForm.reset();
+            productModal.style.display = 'flex';
+        });
+
+        // Open manage categories
+        manageCategoriesBtn.addEventListener('click', () => {
+            // Switch to categories tab
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="categories"]').classList.add('active');
+            
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === 'categories-tab') {
+                    content.classList.add('active');
+                }
+            });
+            
+            renderCategories();
+        });
+
+        // Open add category modal
+        addCategoryBtn.addEventListener('click', () => {
+            document.getElementById('categoryModalTitle').textContent = 'Tambah Kategori Baru';
+            categoryForm.reset();
+            document.getElementById('categoryColor').value = '#3498db';
+            categoryModal.style.display = 'flex';
+        });
+
+        // Open edit category modal
+        function openCategoryModal(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+            
+            document.getElementById('categoryModalTitle').textContent = 'Edit Kategori';
+            document.getElementById('categoryName').value = category.name;
+            document.getElementById('categoryDescription').value = category.description || '';
+            document.getElementById('categoryColor').value = category.color;
+            
+            // Set form submit handler
+            categoryForm.onsubmit = (e) => {
+                e.preventDefault();
+                updateCategory(categoryId);
+            };
+            
+            categoryModal.style.display = 'flex';
+        }
+
+        // Submit product form
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const code = document.getElementById('productCode').value;
+            const name = document.getElementById('productName').value;
+            const category = document.getElementById('productCategory').value;
+            const stock = parseInt(document.getElementById('productStock').value);
+            const minStock = parseInt(document.getElementById('productMinStock').value);
+            
+            // Check if product code already exists
+            const existingProduct = products.find(p => p.code === code);
+            if (existingProduct) {
+                showNotification('Kode produk sudah ada!', 'error');
+                return;
+            }
+            
+            // Add new product
+            products.push({ code, name, category, stock, minStock });
+            
+            // Update category counts
+            updateCategoryCounts();
+            
+            // Add initial transaction for stock
+            const newTransaction = {
+                id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                date: new Date().toISOString().split('T')[0],
+                productCode: code,
+                productName: name,
+                type: 'in',
+                amount: stock,
+                finalStock: stock,
+                notes: 'Stok awal'
+            };
+            transactions.push(newTransaction);
+            
+            saveData();
+            renderProducts();
+            productModal.style.display = 'none';
+            showNotification('Produk berhasil ditambahkan!', 'success');
+        });
+
+        // Submit category form
+        categoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('categoryName').value;
+            const description = document.getElementById('categoryDescription').value;
+            const color = document.getElementById('categoryColor').value;
+            
+            // Check if category name already exists
+            const existingCategory = categories.find(c => c.name === name);
+            if (existingCategory && !categoryForm.dataset.editing) {
+                showNotification('Nama kategori sudah ada!', 'error');
+                return;
+            }
+            
+            // Add new category
+            if (!categoryForm.dataset.editing) {
+                const newId = categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1;
+                categories.push({ 
+                    id: newId, 
+                    name, 
+                    description, 
+                    color,
+                    productCount: 0
+                });
+                
+                showNotification('Kategori berhasil ditambahkan!', 'success');
+            }
+            
+            saveData();
+            populateCategoryDropdowns();
+            renderCategories();
+            categoryModal.style.display = 'none';
+            delete categoryForm.dataset.editing;
+        });
+
+        // Update category
+        function updateCategory(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+            
+            const name = document.getElementById('categoryName').value;
+            const description = document.getElementById('categoryDescription').value;
+            const color = document.getElementById('categoryColor').value;
+            
+            // Check if category name already exists (excluding current category)
+            const existingCategory = categories.find(c => c.name === name && c.id !== categoryId);
+            if (existingCategory) {
+                showNotification('Nama kategori sudah ada!', 'error');
+                return;
+            }
+            
+            // Update products that use this category
+            const oldCategoryName = category.name;
+            if (oldCategoryName !== name) {
+                products.forEach(product => {
+                    if (product.category === oldCategoryName) {
+                        product.category = name;
+                    }
+                });
+            }
+            
+            // Update category
+            category.name = name;
+            category.description = description;
+            category.color = color;
+            
+            // Update category counts
+            updateCategoryCounts();
+            
+            saveData();
+            populateCategoryDropdowns();
+            renderProducts();
+            renderCategories();
+            categoryModal.style.display = 'none';
+            showNotification('Kategori berhasil diupdate!', 'success');
+        }
+
+        // Delete category
+        function deleteCategory(categoryId) {
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) return;
+            
+            // Check if category has products
+            if (category.productCount > 0) {
+                showNotification('Tidak dapat menghapus kategori yang memiliki produk!', 'error');
+                return;
+            }
+            
+            if (confirm(`Apakah Anda yakin ingin menghapus kategori "${category.name}"?`)) {
+                categories = categories.filter(c => c.id !== categoryId);
+                saveData();
+                populateCategoryDropdowns();
+                renderCategories();
+                showNotification('Kategori berhasil dihapus!', 'success');
+            }
+        }
+
+        // Open stock transaction modal
+        function openStockTransactionModal(productCode, type) {
+            const product = products.find(p => p.code === productCode);
+            if (!product) return;
+            
+            document.getElementById('transactionProductName').value = product.name;
+            document.getElementById('transactionType').value = type;
+            document.getElementById('transactionAmount').value = '';
+            document.getElementById('transactionNotes').value = '';
+            
+            // Update modal title based on transaction type
+            const modalTitle = document.getElementById('transactionModalTitle');
+            modalTitle.textContent = type === 'in' ? 'Input Stok Barang' : 'Output Stok Barang';
+            
+            stockTransactionModal.style.display = 'flex';
+            
+            // Set form submit handler
+            stockTransactionForm.onsubmit = (e) => {
+                e.preventDefault();
+                processStockTransaction(productCode, type);
+            };
+        }
+
+        // Process stock transaction
+        function processStockTransaction(productCode, type) {
+            const product = products.find(p => p.code === productCode);
+            if (!product) return;
+            
+            const amount = parseInt(document.getElementById('transactionAmount').value);
+            const notes = document.getElementById('transactionNotes').value;
+            
+            // Validate stock for output transaction
+            if (type === 'out' && product.stock - amount < 0) {
+                showNotification('Stok tidak mencukupi!', 'error');
+                return;
+            }
+            
+            // Update product stock
+            if (type === 'in') {
+                product.stock += amount;
+            } else {
+                product.stock -= amount;
+            }
+            
+            // Add transaction record
+            const newTransaction = {
+                id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                date: new Date().toISOString().split('T')[0],
+                productCode: productCode,
+                productName: product.name,
+                type: type,
+                amount: amount,
+                finalStock: product.stock,
+                notes: notes
+            };
+            transactions.push(newTransaction);
+            
+            saveData();
+            renderProducts();
+            stockTransactionModal.style.display = 'none';
+            showNotification(`Stok berhasil ${type === 'in' ? 'ditambahkan' : 'dikurangi'}!`, 'success');
+        }
+
+        // Delete product
+        function deleteProduct(productCode) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                // Remove product
+                products = products.filter(p => p.code !== productCode);
+                
+                // Remove related transactions
+                transactions = transactions.filter(t => t.productCode !== productCode);
+                
+                // Update category counts
+                updateCategoryCounts();
+                
+                saveData();
+                renderProducts();
+                showNotification('Produk berhasil dihapus!', 'success');
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('warehouseProducts', JSON.stringify(products));
+            localStorage.setItem('warehouseTransactions', JSON.stringify(transactions));
+            localStorage.setItem('warehouseCategories', JSON.stringify(categories));
+        }
+
+        // Event listeners for filters
+        searchInput.addEventListener('input', filterProducts);
+        categoryFilter.addEventListener('change', filterProducts);
+        stockFilter.addEventListener('change', filterProducts);
+        categorySearch.addEventListener('input', filterCategories);
+        transactionSearch.addEventListener('input', filterTransactions);
+        transactionTypeFilter.addEventListener('change', filterTransactions);
 
         // Initialize the application
         function init() {
@@ -1536,15 +1691,123 @@
             populateCategoryDropdowns();
             renderProducts();
             filterTransactions(); // Apply default date filter
-            updateFilterInfo();
             
-            // Add event listeners for real-time filtering
-            transactionSearch.addEventListener('input', filterTransactions);
-            transactionTypeFilter.addEventListener('change', filterTransactions);
-            startDate.addEventListener('change', filterTransactions);
-            endDate.addEventListener('change', filterTransactions);
-            
-            // ... (rest of the initialization code)
+            // Add event listeners for forms
+            productForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const code = document.getElementById('productCode').value;
+                const name = document.getElementById('productName').value;
+                const category = document.getElementById('productCategory').value;
+                const stock = parseInt(document.getElementById('productStock').value);
+                const minStock = parseInt(document.getElementById('productMinStock').value);
+                
+                // Check if product code already exists
+                const existingProduct = products.find(p => p.code === code);
+                if (existingProduct) {
+                    showNotification('Kode produk sudah ada!', 'error');
+                    return;
+                }
+                
+                // Add new product
+                products.push({ code, name, category, stock, minStock });
+                
+                // Update category counts
+                updateCategoryCounts();
+                
+                // Add initial transaction for stock
+                const newTransaction = {
+                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                    date: new Date().toISOString().split('T')[0],
+                    productCode: code,
+                    productName: name,
+                    type: 'in',
+                    amount: stock,
+                    finalStock: stock,
+                    notes: 'Stok awal'
+                };
+                transactions.push(newTransaction);
+                
+                saveData();
+                renderProducts();
+                productModal.style.display = 'none';
+                showNotification('Produk berhasil ditambahkan!', 'success');
+            });
+
+            categoryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('categoryName').value;
+                const description = document.getElementById('categoryDescription').value;
+                const color = document.getElementById('categoryColor').value;
+                
+                // Check if category name already exists
+                const existingCategory = categories.find(c => c.name === name);
+                if (existingCategory && !categoryForm.dataset.editing) {
+                    showNotification('Nama kategori sudah ada!', 'error');
+                    return;
+                }
+                
+                // Add new category
+                if (!categoryForm.dataset.editing) {
+                    const newId = categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1;
+                    categories.push({ 
+                        id: newId, 
+                        name, 
+                        description, 
+                        color,
+                        productCount: 0
+                    });
+                    
+                    showNotification('Kategori berhasil ditambahkan!', 'success');
+                }
+                
+                saveData();
+                populateCategoryDropdowns();
+                renderCategories();
+                categoryModal.style.display = 'none';
+                delete categoryForm.dataset.editing;
+            });
+
+            stockTransactionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const productName = document.getElementById('transactionProductName').value;
+                const type = document.getElementById('transactionType').value;
+                const amount = parseInt(document.getElementById('transactionAmount').value);
+                const notes = document.getElementById('transactionNotes').value;
+                
+                const product = products.find(p => p.name === productName);
+                if (!product) return;
+                
+                // Validate stock for output transaction
+                if (type === 'out' && product.stock - amount < 0) {
+                    showNotification('Stok tidak mencukupi!', 'error');
+                    return;
+                }
+                
+                // Update product stock
+                if (type === 'in') {
+                    product.stock += amount;
+                } else {
+                    product.stock -= amount;
+                }
+                
+                // Add transaction record
+                const newTransaction = {
+                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                    date: new Date().toISOString().split('T')[0],
+                    productCode: product.code,
+                    productName: product.name,
+                    type: type,
+                    amount: amount,
+                    finalStock: product.stock,
+                    notes: notes
+                };
+                transactions.push(newTransaction);
+                
+                saveData();
+                renderProducts();
+                stockTransactionModal.style.display = 'none';
+                showNotification(`Stok berhasil ${type === 'in' ? 'ditambahkan' : 'dikurangi'}!`, 'success');
+            });
         }
 
         // Start the application
