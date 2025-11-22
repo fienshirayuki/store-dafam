@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Ceklist Stok Gudang</title>
+    <title>Aplikasi Stok Gudang</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -42,10 +42,16 @@
             background-color: var(--primary-color);
             color: white;
             padding: 15px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .header-content {
@@ -56,9 +62,62 @@
             gap: 10px;
         }
         
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         h1 {
             font-size: 1.5rem;
             white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled h1 {
+            font-size: 1.3rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .user-name {
+            font-weight: 600;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 12px;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255,255,255,0.3);
         }
         
         .card {
@@ -145,16 +204,25 @@
             background-color: #5a6268;
         }
         
-        .search-container {
-            display: flex;
-            gap: 8px;
+        .search-filter-container {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 15px;
             margin-bottom: 15px;
-            flex-wrap: wrap;
+            align-items: end;
         }
         
-        .search-container input, .search-container select {
-            flex: 1;
-            min-width: 120px;
+        .search-filter-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 8px;
+            align-items: end;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         
         .export-buttons {
@@ -165,18 +233,11 @@
         }
         
         .date-filter-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
             gap: 8px;
             margin-bottom: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        
-        .date-filter-group {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
+            align-items: end;
         }
         
         .date-range-inputs {
@@ -226,13 +287,13 @@
             font-weight: bold;
         }
         
-        .action-buttons {
+        .table-actions {
             display: flex;
             gap: 4px;
             flex-wrap: wrap;
         }
         
-        .action-buttons button {
+        .table-actions button {
             padding: 4px 8px;
             font-size: 0.75rem;
         }
@@ -410,15 +471,6 @@
             font-size: 0.8rem;
         }
         
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
         /* Responsive Design */
         @media (max-width: 768px) {
             .container {
@@ -430,16 +482,10 @@
                 align-items: flex-start;
             }
             
-            .header-buttons {
-                display: flex;
-                gap: 8px;
+            .user-info {
                 width: 100%;
                 justify-content: space-between;
-            }
-            
-            .header-buttons button {
-                flex: 1;
-                text-align: center;
+                margin-top: 10px;
             }
             
             .card {
@@ -455,17 +501,31 @@
                 padding: 8px 6px;
             }
             
-            .search-container, .date-filter-container, .export-buttons {
-                flex-direction: column;
+            .search-filter-container {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .search-filter-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .date-filter-container {
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
             
             .date-range-inputs {
                 flex-direction: column;
-                width: 100%;
             }
             
             .date-range-inputs input {
                 width: 100%;
+            }
+            
+            .action-buttons, .export-buttons {
+                flex-direction: column;
             }
             
             .tabs {
@@ -481,7 +541,7 @@
                 grid-template-columns: 1fr;
             }
             
-            .action-buttons {
+            .table-actions {
                 flex-direction: column;
             }
             
@@ -493,6 +553,10 @@
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.3rem;
+            }
+            
+            header.scrolled h1 {
+                font-size: 1.1rem;
             }
             
             .tab {
@@ -508,17 +572,31 @@
             .stat-value {
                 font-size: 1.1rem;
             }
+            
+            .user-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
+    <header id="mainHeader">
         <div class="container">
             <div class="header-content">
-                <h1>Aplikasi Ceklist Stok Gudang</h1>
-                <div class="header-buttons">
-                    <button id="addProductBtn">Tambah Produk</button>
-                    <button id="manageCategoriesBtn" class="btn-info">Kelola Kategori</button>
+                <div class="header-title">
+                    <h1>📦 Aplikasi Stok Gudang</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <div>
+                            <div class="user-name" id="userName">Administrator</div>
+                            <div class="user-role" id="userRole">Admin</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
             </div>
         </div>
@@ -529,30 +607,36 @@
         <div class="notification error" id="errorNotification">Terjadi kesalahan!</div>
         
         <div class="tabs">
-            <div class="tab active" data-tab="products">Daftar Produk</div>
-            <div class="tab" data-tab="categories">Kategori</div>
-            <div class="tab" data-tab="transactions">Riwayat Transaksi</div>
+            <div class="tab active" data-tab="products">📋 Daftar Produk</div>
+            <div class="tab" data-tab="categories">🏷️ Kategori</div>
+            <div class="tab" data-tab="transactions">📊 Riwayat Transaksi</div>
         </div>
         
         <!-- Tab Daftar Produk -->
         <div class="tab-content active" id="products-tab">
             <div class="card">
                 <div class="export-buttons">
-                    <button class="btn-export" id="exportProductsPdf">Export PDF</button>
-                    <button class="btn-export" id="exportProductsExcel">Export Excel</button>
+                    <button class="btn-export" id="exportProductsPdf">📄 Export PDF</button>
+                    <button class="btn-export" id="exportProductsExcel">📊 Export Excel</button>
+                    <button id="addProductBtn">➕ Tambah Produk</button>
                 </div>
                 
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Cari produk berdasarkan nama...">
-                    <select id="categoryFilter">
-                        <option value="">Semua Kategori</option>
-                    </select>
-                    <select id="stockFilter">
-                        <option value="">Semua Stok</option>
-                        <option value="low">Stok Rendah</option>
-                        <option value="medium">Stok Sedang</option>
-                        <option value="high">Stok Tinggi</option>
-                    </select>
+                <div class="search-filter-container">
+                    <div class="search-filter-row">
+                        <input type="text" id="searchInput" placeholder="🔍 Cari produk...">
+                        <select id="categoryFilter">
+                            <option value="">📂 Semua Kategori</option>
+                        </select>
+                        <select id="stockFilter">
+                            <option value="">📦 Semua Stok</option>
+                            <option value="low">🔴 Stok Rendah</option>
+                            <option value="medium">🟡 Stok Sedang</option>
+                            <option value="high">🟢 Stok Tinggi</option>
+                        </select>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="manageCategoriesBtn" class="btn-info">🏷️ Kelola Kategori</button>
+                    </div>
                 </div>
                 
                 <table id="productsTable">
@@ -578,13 +662,15 @@
         <div class="tab-content" id="categories-tab">
             <div class="card">
                 <div class="export-buttons">
-                    <button class="btn-export" id="exportCategoriesPdf">Export PDF</button>
-                    <button class="btn-export" id="exportCategoriesExcel">Export Excel</button>
+                    <button class="btn-export" id="exportCategoriesPdf">📄 Export PDF</button>
+                    <button class="btn-export" id="exportCategoriesExcel">📊 Export Excel</button>
+                    <button id="addCategoryBtn" class="btn-success">➕ Tambah Kategori</button>
                 </div>
                 
-                <div class="search-container">
-                    <input type="text" id="categorySearch" placeholder="Cari kategori...">
-                    <button id="addCategoryBtn" class="btn-success">Tambah Kategori</button>
+                <div class="search-filter-container">
+                    <div class="search-filter-row">
+                        <input type="text" id="categorySearch" placeholder="🔍 Cari kategori...">
+                    </div>
                 </div>
                 
                 <div class="categories-container" id="categoriesContainer">
@@ -597,29 +683,29 @@
         <div class="tab-content" id="transactions-tab">
             <div class="card">
                 <div class="export-buttons">
-                    <button class="btn-export" id="exportTransactionsPdf">Export PDF</button>
-                    <button class="btn-export" id="exportTransactionsExcel">Export Excel</button>
+                    <button class="btn-export" id="exportTransactionsPdf">📄 Export PDF</button>
+                    <button class="btn-export" id="exportTransactionsExcel">📊 Export Excel</button>
                 </div>
                 
-                <div class="search-container">
-                    <input type="text" id="transactionSearch" placeholder="Cari transaksi berdasarkan nama produk...">
-                    <select id="transactionTypeFilter">
-                        <option value="">Semua Jenis</option>
-                        <option value="in">Barang Masuk</option>
-                        <option value="out">Barang Keluar</option>
-                    </select>
+                <div class="search-filter-container">
+                    <div class="search-filter-row">
+                        <input type="text" id="transactionSearch" placeholder="🔍 Cari transaksi...">
+                        <select id="transactionTypeFilter">
+                            <option value="">📋 Semua Jenis</option>
+                            <option value="in">⬆️ Barang Masuk</option>
+                            <option value="out">⬇️ Barang Keluar</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="date-filter-container">
-                    <div class="date-filter-group">
-                        <label>Filter Tanggal:</label>
-                        <div class="date-range-inputs">
-                            <input type="date" id="startDate">
-                            <span>s/d</span>
-                            <input type="date" id="endDate">
-                        </div>
+                    <label>📅 Filter Tanggal:</label>
+                    <div class="date-range-inputs">
+                        <input type="date" id="startDate">
+                        <span>s/d</span>
+                        <input type="date" id="endDate">
                     </div>
-                    <button id="applyDateFilter" class="btn-info">Terapkan Filter</button>
+                    <button id="applyDateFilter" class="btn-info">✅ Terapkan Filter</button>
                 </div>
                 
                 <div class="stats-summary" id="transactionStats">
@@ -645,12 +731,12 @@
             </div>
         </div>
     </main>
-    
+
     <!-- Modal untuk menambah/mengedit produk -->
     <div class="modal" id="productModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle">Tambah Produk Baru</h2>
+                <h2 id="modalTitle">➕ Tambah Produk Baru</h2>
                 <span class="close">&times;</span>
             </div>
             <form id="productForm">
@@ -677,7 +763,7 @@
                     <input type="number" id="productMinStock" min="0" required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" id="submitProductBtn">Simpan</button>
+                    <button type="submit" id="submitProductBtn">💾 Simpan</button>
                 </div>
             </form>
         </div>
@@ -687,7 +773,7 @@
     <div class="modal" id="stockTransactionModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="transactionModalTitle">Input Stok Barang</h2>
+                <h2 id="transactionModalTitle">⬆️ Input Stok Barang</h2>
                 <span class="close">&times;</span>
             </div>
             <form id="stockTransactionForm">
@@ -698,8 +784,8 @@
                 <div class="form-group">
                     <label for="transactionType">Jenis Transaksi</label>
                     <select id="transactionType">
-                        <option value="in">Barang Masuk (Input)</option>
-                        <option value="out">Barang Keluar (Output)</option>
+                        <option value="in">⬆️ Barang Masuk (Input)</option>
+                        <option value="out">⬇️ Barang Keluar (Output)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -708,10 +794,10 @@
                 </div>
                 <div class="form-group">
                     <label for="transactionNotes">Keterangan</label>
-                    <textarea id="transactionNotes" rows="3"></textarea>
+                    <textarea id="transactionNotes" rows="3" placeholder="Contoh: Pembelian dari supplier..."></textarea>
                 </div>
                 <div class="form-group">
-                    <button type="submit" id="submitTransactionBtn">Simpan Transaksi</button>
+                    <button type="submit" id="submitTransactionBtn">💾 Simpan Transaksi</button>
                 </div>
             </form>
         </div>
@@ -721,7 +807,7 @@
     <div class="modal" id="categoryModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="categoryModalTitle">Tambah Kategori Baru</h2>
+                <h2 id="categoryModalTitle">➕ Tambah Kategori Baru</h2>
                 <span class="close">&times;</span>
             </div>
             <form id="categoryForm">
@@ -731,21 +817,27 @@
                 </div>
                 <div class="form-group">
                     <label for="categoryDescription">Deskripsi (Opsional)</label>
-                    <textarea id="categoryDescription" rows="3"></textarea>
+                    <textarea id="categoryDescription" rows="3" placeholder="Deskripsi kategori..."></textarea>
                 </div>
                 <div class="form-group">
                     <label for="categoryColor">Warna Kategori</label>
                     <input type="color" id="categoryColor" value="#3498db">
                 </div>
                 <div class="form-group">
-                    <button type="submit" id="submitCategoryBtn">Simpan Kategori</button>
+                    <button type="submit" id="submitCategoryBtn">💾 Simpan Kategori</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Data kategori (simulasi database)
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize data
         let categories = JSON.parse(localStorage.getItem('warehouseCategories')) || [
             { id: 1, name: 'Elektronik', description: 'Produk elektronik dan gadget', color: '#3498db', productCount: 2 },
             { id: 2, name: 'Pakaian', description: 'Pakaian dan aksesoris', color: '#e74c3c', productCount: 1 },
@@ -754,7 +846,6 @@
             { id: 5, name: 'Lainnya', description: 'Kategori lainnya', color: '#9b59b6', productCount: 0 }
         ];
 
-        // Data produk (simulasi database)
         let products = JSON.parse(localStorage.getItem('warehouseProducts')) || [
             { code: 'PRD001', name: 'Laptop ASUS', category: 'Elektronik', stock: 15, minStock: 10 },
             { code: 'PRD002', name: 'Mouse Wireless', category: 'Elektronik', stock: 45, minStock: 20 },
@@ -763,7 +854,6 @@
             { code: 'PRD005', name: 'Snack Coklat', category: 'Makanan', stock: 25, minStock: 30 }
         ];
 
-        // Data transaksi (simulasi database)
         let transactions = JSON.parse(localStorage.getItem('warehouseTransactions')) || [
             { id: 1, date: '2023-10-01', productCode: 'PRD001', productName: 'Laptop ASUS', type: 'in', amount: 10, finalStock: 10, notes: 'Pembelian awal' },
             { id: 2, date: '2023-10-05', productCode: 'PRD001', productName: 'Laptop ASUS', type: 'out', amount: 2, finalStock: 8, notes: 'Penjualan ke customer A' },
@@ -773,6 +863,12 @@
         ];
 
         // DOM Elements
+        const mainHeader = document.getElementById('mainHeader');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userRole = document.getElementById('userRole');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
         const productsTableBody = document.getElementById('productsTableBody');
         const transactionsTableBody = document.getElementById('transactionsTableBody');
         const categoriesContainer = document.getElementById('categoriesContainer');
@@ -815,6 +911,30 @@
         
         startDate.value = thirtyDaysAgo.toISOString().split('T')[0];
         endDate.value = today.toISOString().split('T')[0];
+
+        // Initialize user info
+        function initializeUserInfo() {
+            if (currentUser) {
+                userAvatar.textContent = currentUser.name.charAt(0);
+                userName.textContent = currentUser.name;
+                userRole.textContent = currentUser.role === 'admin' ? 'Administrator' : 'User';
+            }
+        }
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                mainHeader.classList.add('scrolled');
+            } else {
+                mainHeader.classList.remove('scrolled');
+            }
+        });
 
         // Modal close buttons
         const modalCloseBtns = document.querySelectorAll('.close');
@@ -926,10 +1046,10 @@
                     <td>${product.stock}</td>
                     <td>${product.minStock}</td>
                     <td class="${stockStatus.class}">${stockStatus.status}</td>
-                    <td class="action-buttons">
+                    <td class="table-actions">
                         <button class="btn-success stock-in-btn" data-code="${product.code}">Input Stok</button>
                         <button class="btn-warning stock-out-btn" data-code="${product.code}">Output Stok</button>
-                        <button class="btn-danger delete-btn" data-code="${product.code}">Hapus</button>
+                        <button class="btn-danger delete-product-btn" data-code="${product.code}">Hapus</button>
                     </td>
                 `;
                 
@@ -951,7 +1071,7 @@
                 });
             });
             
-            document.querySelectorAll('.delete-btn').forEach(btn => {
+            document.querySelectorAll('.delete-product-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const productCode = btn.getAttribute('data-code');
                     deleteProduct(productCode);
@@ -976,7 +1096,7 @@
                 categoryCard.innerHTML = `
                     <div class="category-header">
                         <div class="category-name">${category.name}</div>
-                        <div class="action-buttons">
+                        <div class="table-actions">
                             <button class="btn-warning edit-category-btn" data-id="${category.id}">Edit</button>
                             <button class="btn-danger delete-category-btn" data-id="${category.id}">Hapus</button>
                         </div>
@@ -1564,15 +1684,133 @@
         transactionSearch.addEventListener('input', filterTransactions);
         transactionTypeFilter.addEventListener('change', filterTransactions);
 
-        // Initialize
+        // Initialize the application
         function init() {
+            initializeUserInfo();
             updateCategoryCounts();
             populateCategoryDropdowns();
             renderProducts();
             filterTransactions(); // Apply default date filter
+            
+            // Add event listeners for forms
+            productForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const code = document.getElementById('productCode').value;
+                const name = document.getElementById('productName').value;
+                const category = document.getElementById('productCategory').value;
+                const stock = parseInt(document.getElementById('productStock').value);
+                const minStock = parseInt(document.getElementById('productMinStock').value);
+                
+                // Check if product code already exists
+                const existingProduct = products.find(p => p.code === code);
+                if (existingProduct) {
+                    showNotification('Kode produk sudah ada!', 'error');
+                    return;
+                }
+                
+                // Add new product
+                products.push({ code, name, category, stock, minStock });
+                
+                // Update category counts
+                updateCategoryCounts();
+                
+                // Add initial transaction for stock
+                const newTransaction = {
+                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                    date: new Date().toISOString().split('T')[0],
+                    productCode: code,
+                    productName: name,
+                    type: 'in',
+                    amount: stock,
+                    finalStock: stock,
+                    notes: 'Stok awal'
+                };
+                transactions.push(newTransaction);
+                
+                saveData();
+                renderProducts();
+                productModal.style.display = 'none';
+                showNotification('Produk berhasil ditambahkan!', 'success');
+            });
+
+            categoryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('categoryName').value;
+                const description = document.getElementById('categoryDescription').value;
+                const color = document.getElementById('categoryColor').value;
+                
+                // Check if category name already exists
+                const existingCategory = categories.find(c => c.name === name);
+                if (existingCategory && !categoryForm.dataset.editing) {
+                    showNotification('Nama kategori sudah ada!', 'error');
+                    return;
+                }
+                
+                // Add new category
+                if (!categoryForm.dataset.editing) {
+                    const newId = categories.length > 0 ? Math.max(...categories.map(c => c.id)) + 1 : 1;
+                    categories.push({ 
+                        id: newId, 
+                        name, 
+                        description, 
+                        color,
+                        productCount: 0
+                    });
+                    
+                    showNotification('Kategori berhasil ditambahkan!', 'success');
+                }
+                
+                saveData();
+                populateCategoryDropdowns();
+                renderCategories();
+                categoryModal.style.display = 'none';
+                delete categoryForm.dataset.editing;
+            });
+
+            stockTransactionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const productName = document.getElementById('transactionProductName').value;
+                const type = document.getElementById('transactionType').value;
+                const amount = parseInt(document.getElementById('transactionAmount').value);
+                const notes = document.getElementById('transactionNotes').value;
+                
+                const product = products.find(p => p.name === productName);
+                if (!product) return;
+                
+                // Validate stock for output transaction
+                if (type === 'out' && product.stock - amount < 0) {
+                    showNotification('Stok tidak mencukupi!', 'error');
+                    return;
+                }
+                
+                // Update product stock
+                if (type === 'in') {
+                    product.stock += amount;
+                } else {
+                    product.stock -= amount;
+                }
+                
+                // Add transaction record
+                const newTransaction = {
+                    id: transactions.length > 0 ? Math.max(...transactions.map(t => t.id)) + 1 : 1,
+                    date: new Date().toISOString().split('T')[0],
+                    productCode: product.code,
+                    productName: product.name,
+                    type: type,
+                    amount: amount,
+                    finalStock: product.stock,
+                    notes: notes
+                };
+                transactions.push(newTransaction);
+                
+                saveData();
+                renderProducts();
+                stockTransactionModal.style.display = 'none';
+                showNotification(`Stok berhasil ${type === 'in' ? 'ditambahkan' : 'dikurangi'}!`, 'success');
+            });
         }
 
-        // Initial render
+        // Start the application
         init();
     </script>
 </body>
